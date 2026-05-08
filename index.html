@@ -196,34 +196,74 @@
     function generateMemberQR() { document.getElementById('memberQrcode').innerHTML=''; new QRCode(document.getElementById('memberQrcode'),{text:`upi://pay?pa=gouravpatil3086@okicici&am=${newMemberAmount}&cu=INR`,width:160,height:160}); }
     
     function showMemberReceipt(member, plan, amount, paymentMethod, joinDate, expiryDate) {
-        const receiptHtml = `<div class="receipt"><h3><i class="fas fa-dumbbell"></i> METRO FITNESS</h3><h4 style="text-align:center;">MEMBERSHIP RECEIPT</h4>${member.photo?`<div style="text-align:center;"><img src="${member.photo}" style="width:60px;height:60px;border-radius:50%;"></div>`:''}<div class="receipt-details"><p><strong>Receipt No:</strong> ${member.id}/${Date.now()}</p><p><strong>Member Name:</strong> ${member.name}</p><p><strong>Phone:</strong> ${member.phone}</p><p><strong>Plan:</strong> ${plan}</p><p><strong>Amount Paid:</strong> ₹${amount}</p><p><strong>Payment Mode:</strong> ${paymentMethod}</p><p><strong>Joining Date:</strong> ${joinDate}</p><p><strong>Expiry Date:</strong> ${expiryDate}</p><p><strong>Member ID:</strong> ${member.id}</p></div><div class="thankyou-note"><i class="fas fa-heart"></i> Thank you for joining Metro Fitness!<br>Stay healthy, stay strong! 💪</div><button id="sendReceiptWA" class="whatsapp-btn"><i class="fab fa-whatsapp"></i> Send Receipt via WhatsApp</button><button id="closeReceiptBtn" class="continue-btn" style="margin-top:10px;"><i class="fas fa-check"></i> Close</button></div>`;
-        document.getElementById('memberReceiptArea').innerHTML = receiptHtml;
-        document.getElementById('sendReceiptWA')?.addEventListener('click', () => { let p = member.phone.replace(/\D/g,''); if(!p.startsWith('91')) p='91'+p; window.open(`https://wa.me/${p}?text=${encodeURIComponent(`🏋️ *METRO FITNESS RECEIPT* 🏋️%0A%0A━━━━━━━━━━━━━━━━━━━%0A👤 Name: ${member.name}%0A📅 Plan: ${plan}%0A💰 Amount: ₹${amount}%0A💳 Payment: ${paymentMethod}%0A📆 Joining: ${joinDate}%0A⏰ Expiry: ${expiryDate}%0A🆔 ID: ${member.id}%0A%0A✨ Thank you for choosing Metro Fitness! ✨%0A💪 Stay fit!`)}`,'_blank'); });
-        document.getElementById('closeReceiptBtn')?.addEventListener('click', () => { document.getElementById('memberRegModal').style.display='none'; resetMemberModal(); });
-    }
+    const receiptHtml = `
+        <div style="background:white; color:black; padding:20px; border-radius:10px; border:3px solid #FF8C42; font-family:sans-serif; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+            <h2 style="text-align:center; color:#FF8C42; margin:0;">METRO FITNESS</h2>
+            <p style="text-align:center; font-size:12px; margin-bottom:10px;">Official Payment Receipt</p>
+            <hr style="border:1px dashed #ccc;">
+            <p><strong>Member Name:</strong> ${member.name}</p>
+            <p><strong>Plan Details:</strong> ${plan}</p>
+            <p><strong>Amount Paid:</strong> ₹${amount}</p>
+            <p><strong>Joining Date:</strong> ${joinDate}</p>
+            <p><strong>Expiry Date:</strong> <span style="color:red; font-weight:bold;">${expiryDate}</span></p>
+            <p><strong>Payment Mode:</strong> ${paymentMethod}</p>
+            <hr style="border:1px dashed #ccc;">
+            <p style="text-align:center; font-style:italic;">"Thank you for joining Metro Fitness! Let's hit those goals! 💪"</p>
+            <button id="sendReceiptWA" style="background:#25D366; color:white; width:100%; padding:12px; border:none; border-radius:5px; font-weight:bold; cursor:pointer; font-size:16px;">
+                <i class="fab fa-whatsapp"></i> Send to WhatsApp
+            </button>
+            <button id="closeReceiptBtn" style="background:#666; color:white; width:100%; padding:8px; border:none; border-radius:5px; margin-top:10px; cursor:pointer;">Close</button>
+        </div>
+    `;
+    document.getElementById('memberReceiptArea').innerHTML = receiptHtml;
+
+    document.getElementById('sendReceiptWA').onclick = () => {
+        const msg = `*METRO FITNESS RECEIPT*%0A%0A👤 Member: ${member.name}%0A📅 Joining: ${joinDate}%0A⏰ Expiry: ${expiryDate}%0A💰 Plan: ${plan}%0A💳 Paid: ₹${amount}%0A%0A_Thank you for choosing Metro Fitness! Stay strong!_ 💪`;
+        window.open(`https://wa.me/91${member.phone.replace(/\D/g,'')}?text=${msg}`, '_blank');
+    };
+
+    document.getElementById('closeReceiptBtn').onclick = () => {
+        document.getElementById('memberRegModal').style.display = 'none';
+        location.reload(); // Refresh to show the new member in the list
+    };
+}
     
-    function saveMember(paymentMethod, reference) {
-        if(!document.getElementById('memName').value.trim() || !newMemberPlan) { alert("Fill name and select plan"); return; }
-        const today = new Date().toISOString().slice(0,10);
-        let expiry = new Date();
-        if(newMemberPlan.includes("Day")) expiry.setDate(expiry.getDate()+1);
-        else if(newMemberPlan.includes("Month")) expiry.setMonth(expiry.getMonth()+1);
-        else if(newMemberPlan.includes("3 Months")) expiry.setMonth(expiry.getMonth()+3);
-        else if(newMemberPlan.includes("6 Months")) expiry.setMonth(expiry.getMonth()+6);
-        else expiry.setFullYear(expiry.getFullYear()+1);
-        const expiryDate = expiry.toISOString().slice(0,10);
-        const newId = "M"+Math.floor(Math.random()*900+100)+Date.now().toString().slice(-3);
-        const member = {
-            id: newId, name: document.getElementById('memName').value.trim(), address: document.getElementById('memAddress').value,
-            phone: document.getElementById('memPhone').value.trim(), email: document.getElementById('memEmail').value,
-            photo: newMemberPhoto||"", plan: newMemberPlan, amount: newMemberAmount, joinDate: today, expiryDate: expiryDate,
-            paymentMethod: paymentMethod === 'online' ? `Online (UPI - ${reference})` : `Cash (Receipt: ${reference})`
-        };
-        gymMembers.push(member); saveAll(); renderMembers();
-        showMemberReceipt(member, newMemberPlan, newMemberAmount, member.paymentMethod, today, expiryDate);
-        document.getElementById('memberOnlineSection').style.display = 'none';
-        document.getElementById('memberCashSection').style.display = 'none';
+   function saveMember(paymentMethod, reference) {
+    if (!document.getElementById('memName').value.trim() || !newMemberPlan) {
+        alert("Fill name and select plan");
+        return;
     }
+    const today = new Date().toISOString().slice(0, 10);
+    let expiry = new Date();
+    
+    // Logic for Expiry Date
+    if (newMemberPlan.includes("Day")) expiry.setDate(expiry.getDate() + 1);
+    else if (newMemberPlan.includes("Month")) expiry.setMonth(expiry.getMonth() + 1);
+    else if (newMemberPlan.includes("3 Months")) expiry.setMonth(expiry.getMonth() + 3);
+    else if (newMemberPlan.includes("6 Months")) expiry.setMonth(expiry.getMonth() + 6);
+    else expiry.setFullYear(expiry.getFullYear() + 1);
+    
+    const expiryDate = expiry.toISOString().slice(0, 10);
+    const newId = "M" + Math.floor(Math.random() * 900 + 100) + Date.now().toString().slice(-3);
+    
+    const member = {
+        id: newId, 
+        name: document.getElementById('memName').value.trim(),
+        phone: document.getElementById('memPhone').value.trim(),
+        plan: newMemberPlan, 
+        amount: newMemberAmount, 
+        joinDate: today, 
+        expiryDate: expiryDate, 
+        paymentMethod: paymentMethod === 'online' ? `Online (${reference})` : `Cash (${reference})`
+    };
+
+    gymMembers.push(member);
+    saveAll();
+    renderMembers();
+    
+    // This triggers the Receipt Pop-up
+    showMemberReceipt(member, newMemberPlan, newMemberAmount, member.paymentMethod, today, expiryDate);
+}
     
     function resetMemberModal() {
         document.getElementById('memName').value=''; document.getElementById('memAddress').value=''; document.getElementById('memPhone').value=''; document.getElementById('memEmail').value='';
@@ -279,6 +319,32 @@
     document.getElementById('saveStaffRegBtn')?.addEventListener('click',saveStaffFromModal);
     
     renderMembers(); renderStaff(); renderEquipment();
+function generateReceipt(member) {
+    const joiningDate = new Date().toLocaleDateString();
+    let expiry = new Date();
+    // Logic to add months based on plan
+    if(member.plan.includes("1 Month")) expiry.setMonth(expiry.getMonth() + 1);
+    else if(member.plan.includes("3 Months")) expiry.setMonth(expiry.getMonth() + 3);
+    else if(member.plan.includes("1 Year")) expiry.setFullYear(expiry.getFullYear() + 1);
+    
+    const expiryDate = expiry.toLocaleDateString();
+
+    const receiptHtml = `
+        <div style="background: #fff; color: #000; padding: 20px; border-radius: 10px; margin-top: 20px; border: 2px solid #FFD166;">
+            <h3 style="text-align:center;">METRO FITNESS RECEIPT</h3>
+            <p><strong>Member:</strong> ${member.name}</p>
+            <p><strong>Joining:</strong> ${joiningDate}</p>
+            <p><strong>Expiry:</strong> ${expiryDate}</p>
+            <p><strong>Paid:</strong> ${member.amount}</p>
+            <p style="text-align:center; font-style:italic;">Thank you for joining Metro Fitness!</p>
+            <button onclick="window.open('https://wa.me/${member.phone}?text=Hello ${member.name}, your payment is confirmed. Expiry: ${expiryDate}. Thank you!')" 
+                style="background:#25D366; width:100%; color:white; padding:10px; border:none; border-radius:5px; cursor:pointer;">
+                <i class="fab fa-whatsapp"></i> Send to WhatsApp
+            </button>
+        </div>
+    `;
+    document.getElementById('memberReceiptArea').innerHTML = receiptHtml;
+}
 </script>
 </body>
 </html>
