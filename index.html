@@ -10,7 +10,16 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: linear-gradient(145deg, #0a0f1e 0%, #0c1222 100%); min-height: 100vh; padding: 1.5rem; }
-        .app-container { max-width: 1600px; margin: 0 auto; background: rgba(18, 25, 45, 0.65); backdrop-filter: blur(2px); border-radius: 2rem; box-shadow: 0 25px 45px rgba(0, 0, 0, 0.4); overflow: hidden; }
+        .app-container {
+    max-width: 1400px; /* Slightly narrower for better focus */
+    margin: 2rem auto;
+    background: rgba(18, 25, 45, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+}
         .header { padding: 1.2rem 2rem; background: rgba(10, 15, 30, 0.9); border-bottom: 1px solid rgba(255, 255, 255, 0.08); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
         .logo h1 { font-size: 1.9rem; font-weight: 800; background: linear-gradient(135deg, #FFD166, #FF8C42); -webkit-background-clip: text; background-clip: text; color: transparent; display: inline-flex; align-items: center; gap: 10px; }
         .user-panel { display: flex; align-items: center; gap: 1rem; background: #0f1422cc; padding: 0.5rem 1.2rem; border-radius: 60px; }
@@ -20,25 +29,117 @@
         .logout-btn { background: #3a2c2f; color: #ffab7b; }
         .dashboard { padding: 2rem; }
         .login-forms { display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin: 2rem 0; }
-        .card { background: #101624ee; backdrop-filter: blur(8px); border-radius: 1.8rem; padding: 1.8rem; border: 1px solid rgba(255, 255, 255, 0.1); width: 340px; }
-        .card h3 { color: white; margin-bottom: 1.2rem; border-left: 4px solid #FF8C42; padding-left: 12px; }
-        input, select, textarea { width: 100%; padding: 12px 14px; margin: 8px 0; background: #0a0f1c; border: 1px solid #2a3448; border-radius: 1rem; color: white; outline: none; }
+        .card {
+    background: rgba(25, 32, 50, 0.95);
+    border-radius: 1.2rem;
+    padding: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    width: 360px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+       .card h3 {
+    color: #FFD166;
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+    border-left: 4px solid #FF8C42;
+    padding-left: 15px;
+}
+        input, select, textarea {
+    width: 100%;
+    padding: 14px 16px;
+    margin: 10px 0;
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 0.75rem;
+    color: white;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+}
+
+input:focus {
+    border-color: #FF8C42;
+    box-shadow: 0 0 0 3px rgba(255, 140, 66, 0.2);
+}
         input::placeholder, textarea::placeholder { color: #aaa; }
         button { background: #FF8C42; padding: 12px; border: none; border-radius: 2rem; font-weight: bold; cursor: pointer; transition: 0.2s; color: #0a0f1e; }
         .data-card { background: #0d1322cc; border-radius: 1.5rem; padding: 1.5rem; margin-bottom: 1.5rem; border: 1px solid rgba(255,255,255,0.08); }
         .data-card h2 { color: #FFD166; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
         .search-box { background: #0a0f1c; border: 1px solid #FF8C42; border-radius: 2rem; padding: 10px 18px; width: 250px; margin-left: auto; color: white; }
         .search-box::placeholder { color: #aaa; }
-        table { width: 100%; border-collapse: collapse; color: #e2e8f0; }
-        th, td { text-align: left; padding: 10px 6px; border-bottom: 1px solid #2a3448; font-size: 0.85rem; vertical-align: middle; color: #e2e8f0; }
-        th { color: #FF8C42; }
+       table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 8px;
+    margin-top: 1rem;
+}
+
+th {
+    text-align: left;
+    padding: 12px 16px;
+    color: #94a3b8;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+}
+
+td {
+    background: rgba(30, 41, 59, 0.5);
+    padding: 16px;
+    font-size: 0.9rem;
+    color: #f1f5f9;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+td:first-child {
+    border-left: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px 0 0 12px;
+}
+
+td:last-child {
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 0 12px 12px 0;
+}
+
+tr:hover td {
+    background: rgba(51, 65, 85, 0.5);
+    transition: background 0.2s;
+}
         .expiring-row { background-color: rgba(220, 53, 69, 0.4); border-left: 3px solid #dc3545; }
         .overdue-row { background-color: rgba(220, 53, 69, 0.5); border-left: 3px solid #dc3545; }
-        .reminder-btn, .remove-btn, .renew-btn, .edit-btn { padding: 5px 12px; font-size: 0.7rem; margin: 2px; width: auto; color: white; }
-        .reminder-btn { background: #25D366; }
-        .renew-btn { background: #FF8C42; color: #0a0f1e; }
-        .remove-btn { background: #dc3545; }
-        .edit-btn { background: #17a2b8; }
+        .reminder-btn, .remove-btn, .renew-btn, .edit-btn {
+    padding: 8px 16px;
+    font-size: 0.75rem;
+    border-radius: 8px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin: 4px;
+}
+
+.reminder-btn { background: #25D366; color: white; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.2); }
+.renew-btn { background: #FF8C42; color: #0a0f1e; box-shadow: 0 4px 10px rgba(255, 140, 66, 0.2); }
+.remove-btn { background: #ef4444; color: white; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2); }
+.edit-btn { background: #3b82f6; color: white; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.2); }
+
+button:hover {
+    filter: brightness(1.15);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+button:active {
+    transform: translateY(0);
+}
         .contact-link { color: #FFD166; text-decoration: none; cursor: pointer; }
         .member-photo, .staff-photo { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: #2a3448; display: flex; align-items: center; justify-content: center; }
         .action-bar { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; align-items: center; }
