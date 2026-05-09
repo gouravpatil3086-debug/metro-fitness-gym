@@ -180,23 +180,54 @@ button:active {
         .photo-preview img { width: 100%; height: 100%; object-fit: cover; }
 .photo-preview i { font-size: 1.5rem; color: #94a3b8; }
         @media (max-width: 760px) { .dashboard { padding: 1rem; } .search-box { width: 100%; margin: 10px 0; } }
-    </style>
-</head>
-<body>
-<div class="app-container">
-    <div class="header">
-        <div class="logo"><h1><i class="fas fa-dumbbell"></i> METRO FITNESS</h1><div style="font-size: 0.75rem; color: #aaa;">Payment Confirmation | WhatsApp Receipts</div></div>
-        <div class="user-panel" id="userPanel">
-            <span id="userStatusDisplay" class="user-badge"><i class="fas fa-user-lock"></i> Not logged in</span>
-            <button id="showLoginBtn" class="login-btn">Login</button>
-            <button id="logoutBtn" class="logout-btn" style="display: none;">Logout</button>
-        </div>
-    </div>
-    <div class="dashboard" id="mainContent">
-        <div id="loginSection">
-            <div class="login-forms">
-                <div class="card"><h3><i class="fas fa-crown"></i> Admin Login</h3><input type="text" id="adminUser" value="admin"><input type="password" id="adminPass" value="admin123"><button id="adminLoginBtn">Login as Admin</button></div>
-                <div class="card"><h3><i class="fas fa-users"></i> Staff Login</h3><input type="text" id="staffUser" value="staff"><input type="password" id="staffPass" value="staff123"><button id="staffLoginBtn">Login as Staff</button></div>
+    .modal-content {
+    background-color: #fff;
+    margin: 5% auto;           /* Centers it perfectly in the middle */
+    padding: 30px;
+    border-radius: 12px;
+    width: 90%;                /* Full width on phone */
+    max-width: 480px;          /* Clean 'card' width on PC */
+    position: relative;
+    box-shadow: 0 15px 50px rgba(0,0,0,0.4);
+    
+    /* Scroll fix for long forms */
+    max-height: 85vh;          
+    overflow-y: auto;          
+    
+    /* Layout fix */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;                 /* Adds breathing room between fields */
+}
+
+/* This fixes the input fields so they don't look squashed */
+.modal-content input {
+    width: 100%;
+    padding: 12px;
+    margin-top: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    display: block;
+    box-sizing: border-box;    /* Crucial: keeps inputs inside the white box */
+}
+
+/* ADD THIS TO FIX THE INPUTS INSIDE */
+.modal-content input {
+    width: 100%;           /* Makes inputs fit inside the box */
+    box-sizing: border-box; /* Prevents them from poking out the sides */
+    margin-bottom: 15px;
+}
+/* Add this to make your input fields look premium */
+.modal-content input, 
+.modal-content select {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0 20px 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    display: block;
+}
             </div>
         </div>
         <div id="dashboardPanel" style="display: none;">
@@ -238,14 +269,42 @@ button:active {
 
 <!-- Staff Registration Modal -->
 <div id="staffRegModal" class="modal"><div class="modal-content"><span class="close-modal" id="closeStaffRegModal">&times;</span><h2 style="color:#FFD166;">Register Staff</h2>
-    <input type="text" id="staffName" placeholder="Full Name *"><input type="text" id="staffAddress" placeholder="Address"><input type="tel" id="staffPhone" placeholder="Phone *"><input type="email" id="staffEmail" placeholder="Email *">
+    <input type="text" id="staffName" placeholder="Full Name *"><input type="text" id="staffAddress" placeholder="Address"><input type="tel" id="staffPhone" placeholder="Phone *"><input type="email" id="staffEmail" placeholder="Email *" required>
+
+            <div style="margin-top: 15px; text-align: left;">
+                <label style="color: #bbb; font-size: 14px; display: block; margin-bottom: 5px;">Identity Proof</label>
+                <select id="idProofType" onchange="updateIdPlaceholder()" 
+                        style="width: 100%; padding: 12px; border-radius: 8px; background: #1a1a2e; color: white; border: 1px solid #444; margin-bottom: 10px; cursor: pointer;">
+                    <option value="aadhar">Aadhar Number</option>
+                    <option value="license">Driving License</option>
+                </select>
+                
+                <input type="text" id="idNumber" placeholder="Enter Aadhar Number" required 
+                       style="width: 100%; padding: 12px; border-radius: 8px; background: #1a1a2e; color: white; border: 1px solid #444; box-sizing: border-box;">
+            </div>
+
+            <button type="submit" class="btn">Save Staff</button>
+
+<script>
+function updateIdPlaceholder() {
+    const select = document.getElementById('idProofType');
+    const input = document.getElementById('idNumber');
+    if (select.value === 'aadhar') {
+        input.placeholder = "Enter Aadhar Number";
+    } else {
+        input.placeholder = "Enter Driving License Number";
+    }
+}
+</script>
     <div class="photo-preview" id="staffPhotoPreview" onclick="document.getElementById('staffPhotoInput').click()"><i class="fas fa-camera"></i></div>
     <input type="file" id="staffPhotoInput" accept="image/*" style="display:none;"><button id="saveStaffRegBtn" style="background:#2c7a4d;">Save Staff</button></div></div>
 
 <!-- Renewal Modal -->
 <div id="renewModal" class="modal"><div class="modal-content"><span class="close-modal" id="closeRenewModal">&times;</span><h2 style="color:#FFD166;">Renew Membership</h2>
-    <div id="renewMemberDetails" class="member-details-card"></div><hr><h3>Select New Plan</h3><div id="renewPlanContainer"></div><hr><h3>Payment Method</h3>
-    <div class="payment-option"><button id="renewOnlineBtn" class="payment-btn">💳 Online</button><button id="renewCashBtn" class="payment-btn">💵 Cash</button></div>
+<div id="renewMemberDetails" class="member-details-card" style="color: white;"></div>    
+    <hr><h3 style="color:#FFD166; margin-top:10px;">Select New Plan</h3>
+<div id="renewPlanContainer"></div>
+<hr><h3 style="color:#FFD166; margin-top:10px;">Payment Method</h3>
     <div id="renewOnlineSection" style="display:none;"><div class="qr-container"><div id="renewQrcode"></div><div class="upi-id">UPI: gouravpatil3086@okicici</div><input type="text" id="renewTransactionId" placeholder="Transaction ID"><button id="confirmRenewOnlineBtn">Confirm Payment</button></div></div>
     <div id="renewReceiptArea"></div></div></div>
 
@@ -278,7 +337,7 @@ button:active {
     
     function renderMembers() {
         const tbody = document.getElementById('membersTableBody'); if(!tbody) return;
-        let filtered = getSortedMembers().filter(m => m.name.toLowerCase().includes(memberSearchTerm) || m.phone.includes(memberSearchTerm));
+        row.innerHTML += `<td><a href="javascript:void(0)" onclick="showMemberProfile('${member.id}')" style="color: #00d2ff; text-decoration: none; font-weight: bold; cursor: pointer;">${member.name}</a></td>`;
         tbody.innerHTML = filtered.map(m => { const expiring = isExpiringSoon(m.expiryDate); return `<tr class="${expiring ? 'expiring-row' : ''}">
             <td>${m.photo ? `<img src="${m.photo}" class="member-photo" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">` : `<div class="member-photo"><i class="fas fa-user"></i></div>`}</td>
             <td>${m.id}${m.photo?'':''}</td><td>${m.name}</td>
@@ -288,8 +347,32 @@ button:active {
             <td><button class="renew-btn" onclick="openRenewModal('${m.id}')"><i class="fas fa-sync-alt"></i> Renew</button><button class="reminder-btn" onclick="sendReminder('${m.phone}','${m.name}','${m.expiryDate}')"><i class="fab fa-whatsapp"></i></button><button class="remove-btn" onclick="removeMember('${m.id}')"><i class="fas fa-trash"></i></button></td>
         `}).join('');
     }
-    
-    function renderStaff() { const tbody = document.getElementById('staffTableBody'); if(!tbody) return; const filtered = staffList.filter(s => s.name.toLowerCase().includes(staffSearchTerm) || s.phone.includes(staffSearchTerm)); tbody.innerHTML = filtered.map(s => `<tr>
+function showMemberProfile(id) {
+    // Looks in both your members and staff arrays
+    const person = members.find(m => m.id === id) || staffList.find(s => s.id === id);
+
+    if (person) {
+        document.getElementById('viewName').innerText = person.name;
+        document.getElementById('viewID').innerText = "ID: " + person.id;
+        document.getElementById('viewPhone').innerText = "Phone: " + person.phone;
+        
+        // Check if it's staff (no plan) or member (has plan)
+        if (person.plan) {
+            document.getElementById('viewPlan').innerText = "Plan: " + person.plan;
+            document.getElementById('viewExpiry').innerText = "Expiry: " + (person.expiryDate || 'N/A');
+        } else {
+            document.getElementById('viewPlan').innerText = "Email: " + (person.email || 'N/A');
+            document.getElementById('viewExpiry').innerText = "Role: Staff Member";
+        }
+        
+        document.getElementById('profileModal').style.display = 'flex';
+    }
+}
+
+function closeProfile() {
+    document.getElementById('profileModal').style.display = 'none';
+}
+    row.innerHTML += `<td><a href="javascript:void(0)" onclick="showMemberProfile('${staff.id}')" style="color: #00d2ff; text-decoration: none; font-weight: bold; cursor: pointer;">${staff.name}</a></td>`;
         <td>${s.photo ? `<img src="${s.photo}" class="staff-photo" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">` : `<div class="staff-photo"><i class="fas fa-user"></i></div>`}</td>
         <td>${s.id}</td><td>${s.name}</td>
         <td><a class="contact-link" onclick="window.open('https://wa.me/${s.phone.replace(/\\D/g,'')}','_blank')"><i class="fab fa-whatsapp"></i> ${s.phone}</a></td>
@@ -308,42 +391,39 @@ button:active {
     
     function showMemberReceipt(member, plan, amount, paymentMethod, joinDate, expiryDate) {
     const receiptHtml = `
-        <div style="background:white; color:black; padding:20px; border-radius:10px; border:3px solid #FF8C42; font-family:sans-serif; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
-            <h2 style="text-align:center; color:#FF8C42; margin:0;">METRO FITNESS</h2>
-            <p style="text-align:center; font-size:12px; margin-bottom:10px;">Official Payment Receipt</p>
-            <hr style="border:1px dashed #ccc;">
-            <p><strong>Member Name:</strong> ${member.name}</p>
-            <p><strong>Plan Details:</strong> ${plan}</p>
-            <p><strong>Amount Paid:</strong> ₹${amount}</p>
-            <p><strong>Joining Date:</strong> ${joinDate}</p>
-            <p><strong>Expiry Date:</strong> <span style="color:red; font-weight:bold;">${expiryDate}</span></p>
-            <p><strong>Payment Mode:</strong> ${paymentMethod}</p>
-            <hr style="border:1px dashed #ccc;">
-            <p style="text-align:center; font-style:italic;">"Thank you for joining Metro Fitness! Let's hit those goals! 💪"</p>
-            <button id="sendReceiptWA" style="background:#25D366; color:white; width:100%; padding:12px; border:none; border-radius:5px; font-weight:bold; cursor:pointer; font-size:16px;">
-                <i class="fab fa-whatsapp"></i> Send to WhatsApp
-            </button>
-            <button id="closeReceiptBtn" style="background:#666; color:white; width:100%; padding:8px; border:none; border-radius:5px; margin-top:10px; cursor:pointer;">Close</button>
-        </div>
+    <div style="background:white; color:black; padding:20px; border-radius:10px; border:3px solid #FF8C42; font-family:sans-serif; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+        <h2 style="text-align:center; color:#FF8C42; margin:0;">METRO FITNESS</h2>
+        <p style="text-align:center; font-size:12px; margin-bottom:10px;">Official Payment Receipt</p>
+        <hr style="border:1px dashed #ccc;">
+        <p><strong>Member Name:</strong> ${member.name}</p>
+        <p><strong>Plan Details:</strong> ${plan}</p>
+        <p><strong>Amount Paid:</strong> ₹${amount}</p>
+        <p><strong>Joining Date:</strong> ${joinDate}</p>
+        <p><strong>Expiry Date:</strong> <span style="color:red; font-weight:bold;">${expiryDate}</span></p>
+        <p><strong>Payment Mode:</strong> ${paymentMethod}</p>
+        <hr style="border:1px dashed #ccc;">
+        <p style="text-align:center; font-style:italic;">"Thank you for joining Metro Fitness! 💪"</p>
+        <button id="sendReceiptWA" style="background:#25D366; color:white; width:100%; padding:12px; border:none; border-radius:5px; font-weight:bold; cursor:pointer; font-size:16px;">
+            <i class="fab fa-whatsapp"></i> Send to WhatsApp
+        </button>
+        <button id="closeReceiptBtn" style="background:#666; color:white; width:100%; padding:8px; border:none; border-radius:5px; margin-top:10px; cursor:pointer;">Close</button>
+    </div>
     `;
+    
     document.getElementById('memberReceiptArea').innerHTML = receiptHtml;
 
     document.getElementById('sendReceiptWA').onclick = () => {
-        const msg = `*METRO FITNESS RECEIPT*%0A%0A👤 Member: ${member.name}%0A📅 Joining: ${joinDate}%0A⏰ Expiry: ${expiryDate}%0A💰 Plan: ${plan}%0A💳 Paid: ₹${amount}%0A%0A_Thank you for choosing Metro Fitness! Stay strong!_ 💪`;
+        // This part builds the professional WhatsApp message
+        const msg = `━━━━━━━━━━━━━━━━━━━━%0A  🏋️ *METRO FITNESS GYM* 🏋️%0A━━━━━━━━━━━━━━━━━━━━%0A%0A*OFFICIAL PAYMENT RECEIPT*%0A%0A👤 *Member:* ${member.name}%0A📅 *Date:* ${joinDate}%0A⏳ *Valid Until:* ${expiryDate}%0A%0A💳 *Plan:* ${plan}%0A💰 *Total Paid:* ₹${amount}%0A%0A✅ *Status:* Payment Received%0A%0A━━━━━━━━━━━━━━━━━━━━%0A_Stay strong, stay healthy!_ 💪%0A━━━━━━━━━━━━━━━━━━━━`;
+        
         window.open(`https://wa.me/91${member.phone.replace(/\D/g,'')}?text=${msg}`, '_blank');
     };
 
     document.getElementById('closeReceiptBtn').onclick = () => {
         document.getElementById('memberRegModal').style.display = 'none';
-        location.reload(); // Refresh to show the new member in the list
+        location.reload(); 
     };
 }
-    
-   function saveMember(paymentMethod, reference) {
-    if (!document.getElementById('memName').value.trim() || !newMemberPlan) {
-        alert("Fill name and select plan");
-        return;
-    }
     const today = new Date().toISOString().slice(0, 10);
     let expiry = new Date();
     
@@ -369,6 +449,7 @@ button:active {
     };
 
     gymMembers.push(member);
+    uploadToSheets(member);
     saveAll();
     renderMembers();
     
@@ -456,6 +537,33 @@ function generateReceipt(member) {
     `;
     document.getElementById('memberReceiptArea').innerHTML = receiptHtml;
 }
+function uploadToSheets(data) {
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbwbeIEedfDryYl-1OKuUOmESOVkQKjdFnS1d__UryJVtPvfXDqbncfwI1bn7xLL-F-d/exec'; 
+  fetch(scriptURL, {
+    method: 'POST',
+    mode: 'no-cors', 
+    body: JSON.stringify(data)
+  })
+  .then(() => console.log("Cloud Backup Successful"))
+  .catch(error => console.error('Backup Error:', error));
+}
 </script>
+<div id="profileModal" class="modal" style="display:none; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.85); justify-content:center; align-items:center;">
+    <div class="modal-content" style="background:#1a1a2e; color:white; padding:15px; border-radius:12px; width:90%; max-width:320px; text-align:center; position:relative; border:1px solid #444; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+        
+        <span onclick="closeProfile()" style="position:absolute; right:12px; top:8px; font-size:22px; cursor:pointer; color:#888;">&times;</span>
+        
+        <h2 id="viewName" style="color:#00d2ff; margin: 5px 0 2px 0; font-size: 1.4rem;"></h2>
+        <p id="viewID" style="color:#888; margin: 0 0 10px 0; font-size: 0.85rem;"></p>
+        
+        <hr style="border:0; border-top:1px solid #333; margin: 10px 0;">
+        
+        <div style="text-align:left; line-height:1.4; font-size: 14px; padding: 0 10px;">
+            <p id="viewPhone" style="margin: 5px 0;"></p>
+            <p id="viewPlan" style="margin: 5px 0;"></p>
+            <p id="viewExpiry" style="margin: 5px 0;"></p>
+        </div>
+    </div>
+</div>
 </body>
 </html>
