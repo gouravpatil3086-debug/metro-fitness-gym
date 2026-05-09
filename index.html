@@ -3,567 +3,173 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Metro Fitness | Complete Gym Management with Payment Confirmation</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Metro Fitness | Gym Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: linear-gradient(145deg, #0a0f1e 0%, #0c1222 100%); min-height: 100vh; padding: 1.5rem; }
-        .app-container {
-    max-width: 1400px; /* Slightly narrower for better focus */
-    margin: 2rem auto;
-    background: rgba(18, 25, 45, 0.8);
-    backdrop-filter: blur(10px);
-    border-radius: 1.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
-    overflow: hidden;
-}
+        body { background: linear-gradient(145deg, #0a0f1e 0%, #0c1222 100%); min-height: 100vh; padding: 1.5rem; color: white; }
+        
+        .app-container { max-width: 1400px; margin: 2rem auto; background: rgba(18, 25, 45, 0.8); backdrop-filter: blur(10px); border-radius: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5); overflow: hidden; }
         .header { padding: 1.2rem 2rem; background: rgba(10, 15, 30, 0.9); border-bottom: 1px solid rgba(255, 255, 255, 0.08); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
-        .logo h1 { font-size: 1.9rem; font-weight: 800; background: linear-gradient(135deg, #FFD166, #FF8C42); -webkit-background-clip: text; background-clip: text; color: transparent; display: inline-flex; align-items: center; gap: 10px; }
-        .user-panel { display: flex; align-items: center; gap: 1rem; background: #0f1422cc; padding: 0.5rem 1.2rem; border-radius: 60px; }
-        .user-badge { color: white; font-weight: 500; background: #1e2a3e; padding: 5px 14px; border-radius: 30px; font-size: 0.85rem; }
-        .login-btn, .logout-btn, .register-btn-nav { background: #FF8C42; border: none; padding: 8px 18px; border-radius: 40px; font-weight: 600; cursor: pointer; transition: 0.2s; color: #0a0f1e; }
-        .register-btn-nav { background: #2c7a4d; color: white; }
-        .logout-btn { background: #3a2c2f; color: #ffab7b; }
-        .dashboard { padding: 2rem; }
-        .login-forms { display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin: 2rem 0; }
-        .card {
-    background: rgba(25, 32, 50, 0.95);
-    border-radius: 1.2rem;
-    padding: 2rem;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    width: 360px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-}
-       .card h3 {
-    color: #FFD166;
-    font-weight: 700;
-    font-size: 1.2rem;
-    margin-bottom: 1.5rem;
-    border-left: 4px solid #FF8C42;
-    padding-left: 15px;
-}
-        input, select, textarea {
-    width: 100%;
-    padding: 14px 16px;
-    margin: 10px 0;
-    background: #0f172a;
-    border: 1px solid #334155;
-    border-radius: 0.75rem;
-    color: white;
-    font-size: 0.95rem;
-    transition: all 0.2s;
-}
+        .logo h1 { font-size: 1.9rem; font-weight: 800; background: linear-gradient(135deg, #FFD166, #FF8C42); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        
+        .login-forms { display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; padding: 3rem; }
+        .card { background: rgba(25, 32, 50, 0.95); border-radius: 1.2rem; padding: 2rem; border: 1px solid rgba(255, 255, 255, 0.05); width: 320px; }
+        
+        input, select { width: 100%; padding: 12px; margin: 10px 0; background: #0f172a; border: 1px solid #334155; border-radius: 8px; color: white; }
+        button { background: #FF8C42; padding: 12px 20px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: #0a0f1e; width: 100%; margin-top: 10px; }
+        
+        .data-card { background: #0d1322cc; border-radius: 1.5rem; padding: 1.5rem; margin: 1.5rem; border: 1px solid rgba(255,255,255,0.08); }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #2a3448; }
+        
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: #1a1a2e; width: 90%; max-width: 500px; padding: 2rem; border-radius: 1.5rem; position: relative; max-height: 90vh; overflow-y: auto; }
+        .close-modal { position: absolute; right: 1rem; top: 1rem; cursor: pointer; color: #FF8C42; font-size: 1.5rem; }
+        
+        .expiring-row { background: rgba(239, 68, 68, 0.15); }
+        .member-photo { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+        .search-box { width: 250px; float: right; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
 
-input:focus {
-    border-color: #FF8C42;
-    box-shadow: 0 0 0 3px rgba(255, 140, 66, 0.2);
-}
-        input::placeholder, textarea::placeholder { color: #aaa; }
-        button { background: #FF8C42; padding: 12px; border: none; border-radius: 2rem; font-weight: bold; cursor: pointer; transition: 0.2s; color: #0a0f1e; }
-        .data-card { background: #0d1322cc; border-radius: 1.5rem; padding: 1.5rem; margin-bottom: 1.5rem; border: 1px solid rgba(255,255,255,0.08); }
-        .data-card h2 { color: #FFD166; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-        .search-box { background: #0a0f1c; border: 1px solid #FF8C42; border-radius: 2rem; padding: 10px 18px; width: 250px; margin-left: auto; color: white; }
-        .search-box::placeholder { color: #aaa; }
-       table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0 8px;
-    margin-top: 1rem;
-}
-
-th {
-    text-align: left;
-    padding: 12px 16px;
-    color: #94a3b8;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    font-weight: 700;
-}
-
-td {
-    background: rgba(30, 41, 59, 0.5);
-    padding: 16px;
-    font-size: 0.9rem;
-    color: #f1f5f9;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-td:first-child {
-    border-left: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 12px 0 0 12px;
-}
-
-td:last-child {
-    border-right: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 0 12px 12px 0;
-}
-
-tr:hover td {
-    background: rgba(51, 65, 85, 0.5);
-    transition: background 0.2s;
-}
-        .expiring-row { background-color: rgba(220, 53, 69, 0.4); border-left: 3px solid #dc3545; }
-        .overdue-row { background-color: rgba(220, 53, 69, 0.5); border-left: 3px solid #dc3545; }
-        .reminder-btn, .remove-btn, .renew-btn, .edit-btn {
-    padding: 8px 16px;
-    font-size: 0.75rem;
-    border-radius: 8px;
-    font-weight: 600;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    margin: 4px;
-}
-
-.reminder-btn { background: #25D366; color: white; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.2); }
-.renew-btn { background: #FF8C42; color: #0a0f1e; box-shadow: 0 4px 10px rgba(255, 140, 66, 0.2); }
-.remove-btn { background: #ef4444; color: white; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2); }
-.edit-btn { background: #3b82f6; color: white; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.2); }
-
-button:hover {
-    filter: brightness(1.15);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
-}
-
-button:active {
-    transform: translateY(0);
-}
-        .contact-link { color: #FFD166; text-decoration: none; cursor: pointer; }
-        .member-photo, .staff-photo { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: #2a3448; display: flex; align-items: center; justify-content: center; }
-        .action-bar { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; align-items: center; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); justify-content: center; align-items: center; z-index: 1000; overflow-y: auto; padding: 1rem; }
-        .modal-content {
-    background: rgba(18, 25, 45, 0.98);
-    max-width: 500px;
-    width: 95%;
-    border-radius: 1.5rem;
-    padding: 2rem;
-    position: relative;
-    border: 1px solid rgba(255, 140, 66, 0.3);
-    max-height: 85vh; /* This keeps it from going off-screen */
-    overflow-y: auto; /* Adds a scrollbar inside if needed */
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        .close-modal { position: absolute; right: 1.5rem; top: 1rem; font-size: 1.8rem; cursor: pointer; color: #FF8C42; }
-        .member-details-card { background: #0a0f1c; padding: 1rem; border-radius: 1rem; margin: 1rem 0; border-left: 3px solid #FF8C42; }
-        .plan-option { display: flex; justify-content: space-between; padding: 12px; margin: 8px 0; background: #0a0f1c; border-radius: 1rem; cursor: pointer; border: 1px solid #2a3448; transition: 0.2s; color: white; }
-        .plan-option:hover { border-color: #FF8C42; }
-        .plan-option.selected { border-color: #FF8C42; background: #FF8C4222; }
-        .payment-option { display: flex; gap: 1rem; margin: 1rem 0; }
-        .payment-btn { flex: 1; background: #2a3448; color: white; }
-        .payment-btn:hover { background: #FF8C42; color: #0a0f1e; }
-        .qr-container { text-align: center; padding: 1rem; background: #ffffff; border-radius: 1rem; margin: 1rem 0; }
-        .qr-container h4, .qr-container p, .qr-container small { color: #0a0f1e; }
-        #memberQrcode, #renewQrcode { display: flex; justify-content: center; margin: 10px 0; }
-        .upi-id { background: #e8f0fe; padding: 10px; border-radius: 0.8rem; text-align: center; margin: 10px 0; color: #0a0f1e; font-weight: bold; }
-        .manual-confirmation { background: #0a2a1f; padding: 1rem; border-radius: 1rem; margin-top: 0.5rem; }
-        .manual-confirmation p { color: #FFD166; }
-        .receipt { background: linear-gradient(135deg, #0a0f1c, #1a1f30); padding: 1.5rem; border-radius: 1rem; margin-top: 1rem; border: 2px solid #FFD166; }
-        .receipt h3, .receipt h4, .receipt p { color: #e2e8f0; }
-        .receipt h3 { color: #FFD166; text-align: center; margin-bottom: 1rem; }
-        .whatsapp-btn { background: #25D366; color: white; display: inline-flex; align-items: center; gap: 8px; width: 100%; justify-content: center; }
-        .continue-btn { background: #FF8C42; color: #0a0f1e; display: inline-flex; align-items: center; gap: 8px; width: 100%; justify-content: center; margin-top: 0.5rem; }
-        hr { border-color: #2a3448; margin: 1rem 0; }
-        .thankyou-note { text-align: center; margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed #FF8C42; color: #FFD166; font-style: italic; }
-        .photo-preview { width: 80px; height: 80px; border-radius: 50%; background: #1e2a3e; border: 2px solid #FF8C42; display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; margin: 10px auto; }
-        .photo-preview img { width: 100%; height: 100%; object-fit: cover; }
-.photo-preview i { font-size: 1.5rem; color: #94a3b8; }
-        @media (max-width: 760px) { .dashboard { padding: 1rem; } .search-box { width: 100%; margin: 10px 0; } }
-    .modal-content {
-    background-color: #fff;
-    margin: 5% auto;           /* Centers it perfectly in the middle */
-    padding: 30px;
-    border-radius: 12px;
-    width: 90%;                /* Full width on phone */
-    max-width: 480px;          /* Clean 'card' width on PC */
-    position: relative;
-    box-shadow: 0 15px 50px rgba(0,0,0,0.4);
-    
-    /* Scroll fix for long forms */
-    max-height: 85vh;          
-    overflow-y: auto;          
-    
-    /* Layout fix */
-    display: flex;
-    flex-direction: column;
-    gap: 15px;                 /* Adds breathing room between fields */
-}
-
-/* This fixes the input fields so they don't look squashed */
-.modal-content input {
-    width: 100%;
-    padding: 12px;
-    margin-top: 8px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    display: block;
-    box-sizing: border-box;    /* Crucial: keeps inputs inside the white box */
-}
-
-/* ADD THIS TO FIX THE INPUTS INSIDE */
-.modal-content input {
-    width: 100%;           /* Makes inputs fit inside the box */
-    box-sizing: border-box; /* Prevents them from poking out the sides */
-    margin-bottom: 15px;
-}
-/* Add this to make your input fields look premium */
-.modal-content input, 
-.modal-content select {
-    width: 100%;
-    padding: 12px;
-    margin: 10px 0 20px 0;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    display: block;
-}
-            </div>
+<div class="app-container">
+    <div class="header">
+        <div class="logo"><h1><i class="fas fa-dumbbell"></i> METRO FITNESS</h1></div>
+        <div class="user-panel">
+            <span id="userStatusDisplay" class="user-badge">Not logged in</span>
+            <button id="logoutBtn" style="display:none; width:auto; background:#3a2c2f; color:#ffab7b;">Logout</button>
         </div>
-        <div id="dashboardPanel" style="display: none;">
-            <div class="action-bar">
-                <button id="registerMemberBtn" class="register-btn-nav"><i class="fas fa-user-plus"></i> Register Member</button>
-                <button id="registerStaffBtn" class="register-btn-nav" style="background:#6c5ce7;"><i class="fas fa-user-tie"></i> Register Staff</button>
-                <button id="broadcastReminderBtn" class="register-btn-nav" style="background:#e17055;"><i class="fab fa-whatsapp"></i> Broadcast Expiry (3 Days)</button>
-            </div>
-            <div class="data-card">
-                <h2><i class="fas fa-user-friends"></i> Gym Members <span style="font-size:0.7rem; color:#aaa;">(🔴 Red = Expiring within 3 days)</span> <input type="text" id="memberSearch" placeholder="🔍 Search..." class="search-box"></h2>
-                <div style="overflow-x:auto;"><table id="membersTable"><thead><tr><th>Photo</th><th>ID</th><th>Name</th><th>Phone</th><th>Plan</th><th>Expiry Date</th><th>Payment</th><th>Actions</th></tr></thead><tbody id="membersTableBody"></tbody></table></div>
-            </div>
-            <div id="staffCard" class="data-card" style="display:none;">
-                <h2><i class="fas fa-chalkboard-user"></i> Staff Directory <input type="text" id="staffSearch" placeholder="🔍 Search..." class="search-box"></h2>
-                <div style="overflow-x:auto;"><table id="staffTable"><thead><tr><th>Photo</th><th>ID</th><th>Name</th><th>Phone</th><th>Email</th><th>Actions</th></tr></thead><tbody id="staffTableBody"></tbody></table></div>
-            </div>
-            <div class="data-card"><h2><i class="fas fa-wrench"></i> Equipment Maintenance <span style="font-size:0.7rem; color:#aaa;">(🔴 Red = Service Overdue)</span> <button id="addEquipmentBtn" style="background:#2c7a4d; width:auto; padding:8px 20px; margin-left:auto; color:white;"><i class="fas fa-plus"></i> Add Equipment</button></h2>
-                <div style="overflow-x:auto;"><table id="equipmentTable"><thead><tr><th>Equipment</th><th>Status</th><th>Last Service</th><th>Next Due</th><th>Actions</th></tr></thead><tbody id="equipmentTableBody"></tbody>能有</div>
-            </div>
+    </div>
+
+    <div id="loginSection" class="login-forms">
+        <div class="card">
+            <h3>Admin Login</h3>
+            <input type="text" id="adminUser" placeholder="Username">
+            <input type="password" id="adminPass" placeholder="Password">
+            <button id="adminLoginBtn">Login as Admin</button>
+        </div>
+        <div class="card">
+            <h3>Staff Login</h3>
+            <input type="text" id="staffUser" placeholder="Staff ID">
+            <input type="password" id="staffPass" placeholder="Password">
+            <button id="staffLoginBtn">Login as Staff</button>
+        </div>
+    </div>
+
+    <div id="dashboardPanel" style="display: none; padding: 20px;">
+        <div class="action-bar" style="margin-bottom:20px; display:flex; gap:10px;">
+            <button id="registerMemberBtn" style="width:auto;">+ Register Member</button>
+            <button id="registerStaffBtn" style="width:auto; background:#6c5ce7; color:white;">+ Register Staff</button>
+        </div>
+
+        <div class="data-card">
+            <h2>Members <input type="text" id="memberSearch" placeholder="Search..." class="search-box"></h2>
+            <table id="membersTable">
+                <thead>
+                    <tr><th>Photo</th><th>ID</th><th>Name</th><th>Phone</th><th>Expiry</th><th>Actions</th></tr>
+                </thead>
+                <tbody id="membersTableBody"></tbody>
+            </table>
         </div>
     </div>
 </div>
 
-<!-- Member Registration Modal -->
 <div id="memberRegModal" class="modal">
     <div class="modal-content">
         <span class="close-modal" id="closeMemberModal">&times;</span>
-        <h2 style="color:#FFD166;"><i class="fas fa-user-plus"></i> Register New Member</h2>
-        <input type="text" id="memName" placeholder="Full Name *"><input type="text" id="memAddress" placeholder="Address"><input type="tel" id="memPhone" placeholder="Phone Number *"><input type="email" id="memEmail" placeholder="Email">
-        <div class="photo-preview" id="memPhotoPreview" onclick="document.getElementById('memPhotoInput').click()"><i class="fas fa-camera" style="font-size:2rem; color:#FF8C42;"></i></div>
-        <input type="file" id="memPhotoInput" accept="image/*" style="display:none;">
-        <hr><h3>Select Plan</h3><div id="memberPlanContainer"></div><hr><h3>Payment Method</h3>
-        <div class="payment-option"><button id="memberOnlineBtn" class="payment-btn">💳 Online Payment (UPI QR)</button><button id="memberCashBtn" class="payment-btn">💵 Cash Payment</button></div>
-        <div id="memberOnlineSection" style="display:none;"><div class="qr-container"><div id="memberQrcode"></div><div class="upi-id">UPI: gouravpatil3086@okicici</div><input type="text" id="memberTransactionId" placeholder="Enter Transaction ID *" style="margin-top:10px;"><button id="confirmMemberOnlineBtn" class="confirm-btn" style="margin-top:10px; background:#2c7a4d;">✅ Confirm Payment & Generate Receipt</button></div></div>
-        <div id="memberCashSection" style="display:none;"><div class="manual-confirmation"><p><i class="fas fa-rupee-sign"></i> Cash Payment Confirmation</p><input type="text" id="cashReceiptNo" placeholder="Enter Receipt Number / Reference"><button id="confirmMemberCashBtn" class="confirm-btn" style="margin-top:10px; background:#2c7a4d;">✅ Confirm Cash Payment & Generate Receipt</button></div></div>
-        <div id="memberReceiptArea"></div>
+        <h2>New Member</h2>
+        <input type="text" id="memName" placeholder="Full Name">
+        <input type="tel" id="memPhone" placeholder="Phone">
+        <select id="memPlan">
+            <option value="1 Month - ₹1000">1 Month - ₹1000</option>
+            <option value="3 Months - ₹2800">3 Months - ₹2800</option>
+            <option value="1 Year - ₹12000">1 Year - ₹12000</option>
+        </select>
+        <button id="confirmMemberBtn">Confirm & Save</button>
     </div>
 </div>
 
-<!-- Staff Registration Modal -->
-<div id="staffRegModal" class="modal"><div class="modal-content"><span class="close-modal" id="closeStaffRegModal">&times;</span><h2 style="color:#FFD166;">Register Staff</h2>
-    <input type="text" id="staffName" placeholder="Full Name *"><input type="text" id="staffAddress" placeholder="Address"><input type="tel" id="staffPhone" placeholder="Phone *"><input type="email" id="staffEmail" placeholder="Email *" required>
-
-            <div style="margin-top: 15px; text-align: left;">
-                <label style="color: #bbb; font-size: 14px; display: block; margin-bottom: 5px;">Identity Proof</label>
-                <select id="idProofType" onchange="updateIdPlaceholder()" 
-                        style="width: 100%; padding: 12px; border-radius: 8px; background: #1a1a2e; color: white; border: 1px solid #444; margin-bottom: 10px; cursor: pointer;">
-                    <option value="aadhar">Aadhar Number</option>
-                    <option value="license">Driving License</option>
-                </select>
-                
-                <input type="text" id="idNumber" placeholder="Enter Aadhar Number" required 
-                       style="width: 100%; padding: 12px; border-radius: 8px; background: #1a1a2e; color: white; border: 1px solid #444; box-sizing: border-box;">
-            </div>
-
-            <button type="submit" class="btn">Save Staff</button>
-
 <script>
-function updateIdPlaceholder() {
-    const select = document.getElementById('idProofType');
-    const input = document.getElementById('idNumber');
-    if (select.value === 'aadhar') {
-        input.placeholder = "Enter Aadhar Number";
-    } else {
-        input.placeholder = "Enter Driving License Number";
+    // Data Storage
+    let gymMembers = JSON.parse(localStorage.getItem('metro_members')) || [];
+    let currentUser = null;
+
+    // Login Logic
+    document.getElementById('adminLoginBtn').onclick = () => {
+        if(document.getElementById('adminUser').value === 'admin' && document.getElementById('adminPass').value === 'admin123') {
+            loginSucceed('Admin');
+        } else { alert("Wrong credentials"); }
+    };
+
+    function loginSucceed(role) {
+        currentUser = role;
+        document.getElementById('loginSection').style.display = 'none';
+        document.getElementById('dashboardPanel').style.display = 'block';
+        document.getElementById('userStatusDisplay').innerText = role;
+        document.getElementById('logoutBtn').style.display = 'block';
+        renderMembers();
     }
-}
-</script>
-    <div class="photo-preview" id="staffPhotoPreview" onclick="document.getElementById('staffPhotoInput').click()"><i class="fas fa-camera"></i></div>
-    <input type="file" id="staffPhotoInput" accept="image/*" style="display:none;"><button id="saveStaffRegBtn" style="background:#2c7a4d;">Save Staff</button></div></div>
 
-<!-- Renewal Modal -->
-<div id="renewModal" class="modal"><div class="modal-content"><span class="close-modal" id="closeRenewModal">&times;</span><h2 style="color:#FFD166;">Renew Membership</h2>
-<div id="renewMemberDetails" class="member-details-card" style="color: white;"></div>    
-    <hr><h3 style="color:#FFD166; margin-top:10px;">Select New Plan</h3>
-<div id="renewPlanContainer"></div>
-<hr><h3 style="color:#FFD166; margin-top:10px;">Payment Method</h3>
-    <div id="renewOnlineSection" style="display:none;"><div class="qr-container"><div id="renewQrcode"></div><div class="upi-id">UPI: gouravpatil3086@okicici</div><input type="text" id="renewTransactionId" placeholder="Transaction ID"><button id="confirmRenewOnlineBtn">Confirm Payment</button></div></div>
-    <div id="renewReceiptArea"></div></div></div>
-
-<!-- Equipment Modal -->
-<div id="equipmentModal" class="modal"><div class="modal-content"><span class="close-modal" id="closeEquipModal">&times;</span><h2 id="equipModalTitle">Add/Edit Equipment</h2>
-    <input type="text" id="equipName" placeholder="Equipment Name *"><input type="text" id="equipStatus" placeholder="Status"><input type="date" id="equipLastService"><input type="date" id="equipNextDue">
-    <button id="saveEquipmentBtn" style="background:#2c7a4d;">Save Equipment</button></div></div>
-
-<script>
-    let gymMembers = JSON.parse(localStorage.getItem('metro_members')) || [
-        { id: "M101", name: "Alex Johnson", address: "12 Main St", phone: "+919876543210", email: "alex@mail.com", photo: "", plan: "1 Month - ₹800", amount: 800, joinDate: "2025-04-01", expiryDate: "2025-05-05", paymentMethod: "Cash" },
-        { id: "M102", name: "Maria Garcia", phone: "+919876543211", email: "maria@mail.com", photo: "", plan: "1 Year - ₹10000", amount: 10000, joinDate: "2025-01-15", expiryDate: "2026-01-15", paymentMethod: "Online", address: "" }
-    ];
-    let staffList = JSON.parse(localStorage.getItem('metro_staff')) || [{ id: "S001", name: "Emma Watson", address: "NYC", phone: "+919876543214", email: "emma@metrofit.com", photo: "" }];
-    let equipment = JSON.parse(localStorage.getItem('metro_equipment')) || [
-        { name: "Treadmill", status: "Good", lastService: "2025-01-10", nextDue: "2025-04-10" },
-        { name: "Leg Press", status: "Maintenance Required", lastService: "2024-11-20", nextDue: "2025-02-20" }
-    ];
-    const PLAN_PRICES = {"Day Pass - ₹50" : 50 , "1 Month - ₹1000" : 1000 , "3 Months - ₹2800" : 2800 , "6 Months - ₹8000" : 8000 , "1 Year - ₹12000" : 12000 } ;
-    let currentUser = null, renewMember = null, renewSelectedPlan = null, renewPendingAmount = null;
-    let newMemberPlan = null, newMemberAmount = null, newMemberPhoto = null;
-    let editingEquipmentIndex = null;
-    let memberSearchTerm = "", staffSearchTerm = "";
-
-    function saveAll() { localStorage.setItem('metro_members', JSON.stringify(gymMembers)); localStorage.setItem('metro_staff', JSON.stringify(staffList)); localStorage.setItem('metro_equipment', JSON.stringify(equipment)); }
-    function daysUntilExpiry(expiryDateStr) { const today = new Date(); today.setHours(0,0,0,0); const expiry = new Date(expiryDateStr); expiry.setHours(0,0,0,0); return Math.ceil((expiry - today) / (1000*60*60*24)); }
-    function isExpiringSoon(expiryDateStr) { return daysUntilExpiry(expiryDateStr) <= 3; }
-    function isOverdue(dateStr) { if(!dateStr) return false; const today = new Date(); today.setHours(0,0,0,0); const dueDate = new Date(dateStr); dueDate.setHours(0,0,0,0); return dueDate < today; }
-    function getSortedMembers() { return [...gymMembers].sort((a,b) => daysUntilExpiry(a.expiryDate) - daysUntilExpiry(b.expiryDate)); }
-    
+    // Render Table
     function renderMembers() {
-        const tbody = document.getElementById('membersTableBody'); if(!tbody) return;
-        row.innerHTML += `<td><a href="javascript:void(0)" onclick="showMemberProfile('${member.id}')" style="color: #00d2ff; text-decoration: none; font-weight: bold; cursor: pointer;">${member.name}</a></td>`;
-        tbody.innerHTML = filtered.map(m => { const expiring = isExpiringSoon(m.expiryDate); return `<tr class="${expiring ? 'expiring-row' : ''}">
-            <td>${m.photo ? `<img src="${m.photo}" class="member-photo" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">` : `<div class="member-photo"><i class="fas fa-user"></i></div>`}</td>
-            <td>${m.id}${m.photo?'':''}</td><td>${m.name}</td>
-            <td><a class="contact-link" onclick="window.open('https://wa.me/${m.phone.replace(/\\D/g,'')}','_blank')"><i class="fab fa-whatsapp"></i> ${m.phone}</a></td>
-            <td>${m.plan}</td><td style="color:${expiring ? '#ff8888' : '#aaffaa'}">${m.expiryDate} ${expiring ? '⚠️' : ''}</td>
-            <td>${m.paymentMethod}</td>
-            <td><button class="renew-btn" onclick="openRenewModal('${m.id}')"><i class="fas fa-sync-alt"></i> Renew</button><button class="reminder-btn" onclick="sendReminder('${m.phone}','${m.name}','${m.expiryDate}')"><i class="fab fa-whatsapp"></i></button><button class="remove-btn" onclick="removeMember('${m.id}')"><i class="fas fa-trash"></i></button></td>
-        `}).join('');
+        const tbody = document.getElementById('membersTableBody');
+        tbody.innerHTML = gymMembers.map(m => `
+            <tr>
+                <td><i class="fas fa-user-circle fa-2x"></i></td>
+                <td>${m.id}</td>
+                <td>${m.name}</td>
+                <td>${m.phone}</td>
+                <td>${m.expiryDate}</td>
+                <td><button onclick="deleteMember('${m.id}')" style="background:red; color:white; padding:5px; width:auto;">Delete</button></td>
+            </tr>
+        `).join('');
     }
-function showMemberProfile(id) {
-    // Looks in both your members and staff arrays
-    const person = members.find(m => m.id === id) || staffList.find(s => s.id === id);
 
-    if (person) {
-        document.getElementById('viewName').innerText = person.name;
-        document.getElementById('viewID').innerText = "ID: " + person.id;
-        document.getElementById('viewPhone').innerText = "Phone: " + person.phone;
-        
-        // Check if it's staff (no plan) or member (has plan)
-        if (person.plan) {
-            document.getElementById('viewPlan').innerText = "Plan: " + person.plan;
-            document.getElementById('viewExpiry').innerText = "Expiry: " + (person.expiryDate || 'N/A');
-        } else {
-            document.getElementById('viewPlan').innerText = "Email: " + (person.email || 'N/A');
-            document.getElementById('viewExpiry').innerText = "Role: Staff Member";
-        }
-        
-        document.getElementById('profileModal').style.display = 'flex';
-    }
-}
-
-function closeProfile() {
-    document.getElementById('profileModal').style.display = 'none';
-}
-    row.innerHTML += `<td><a href="javascript:void(0)" onclick="showMemberProfile('${staff.id}')" style="color: #00d2ff; text-decoration: none; font-weight: bold; cursor: pointer;">${staff.name}</a></td>`;
-        <td>${s.photo ? `<img src="${s.photo}" class="staff-photo" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">` : `<div class="staff-photo"><i class="fas fa-user"></i></div>`}</td>
-        <td>${s.id}</td><td>${s.name}</td>
-        <td><a class="contact-link" onclick="window.open('https://wa.me/${s.phone.replace(/\\D/g,'')}','_blank')"><i class="fab fa-whatsapp"></i> ${s.phone}</a></td>
-        <td><a class="contact-link" href="mailto:${s.email}"><i class="fas fa-envelope"></i> ${s.email}</a></td>
-        <td><button class="remove-btn" onclick="removeStaff('${s.id}')"><i class="fas fa-trash"></i></button></td>
-    `).join(''); }
-    
-    function renderEquipment() { const tbody = document.getElementById('equipmentTableBody'); if(!tbody) return; tbody.innerHTML = equipment.map((e, idx) => { const overdue = isOverdue(e.nextDue); return `<tr class="${overdue ? 'overdue-row' : ''}"><td>${e.name}</td><td>${e.status}</td><td>${e.lastService || 'N/A'}</td><td style="color:${overdue ? '#ff8888' : '#aaffaa'}">${e.nextDue || 'N/A'} ${overdue ? '⚠️' : ''}</td><td><button class="edit-btn" onclick="editEquipment(${idx})"><i class="fas fa-edit"></i> Edit</button> <button class="remove-btn" onclick="deleteEquipment(${idx})"><i class="fas fa-trash"></i></button></td></tr>`}).join(''); }
-    
-    function removeMember(id) { if(confirm("Remove member?")) { gymMembers = gymMembers.filter(m => m.id !== id); saveAll(); renderMembers(); } }
-    function removeStaff(id) { if(confirm("Remove staff?")) { staffList = staffList.filter(s => s.id !== id); saveAll(); renderStaff(); } }
-    function sendReminder(phone, name, expiry) { let p = phone.replace(/\D/g,''); if(!p.startsWith('91')) p='91'+p; window.open(`https://wa.me/${p}?text=${encodeURIComponent(`🏋️ METRO FITNESS REMINDER ⚠️\n\nName: ${name}\nMembership Expires: ${expiry}\n\nPlease renew today!`)}`, '_blank'); }
-    function sendBroadcastReminders() { let expiring = gymMembers.filter(m => isExpiringSoon(m.expiryDate)); if(expiring.length===0){ alert("No expiring members"); return; } let msg="🏋️ *METRO FITNESS - RENEWAL REMINDER* 🏋️\n\n⚠️ Your membership expires within 3 days!\n\n"; expiring.forEach(m=>{ msg+=`👤 ${m.name} | Expires: ${m.expiryDate}\n`; }); msg+="\nPlease visit Metro Fitness for renewal!"; expiring.forEach(m=>{ let p=m.phone.replace(/\D/g,''); if(!p.startsWith('91')) p='91'+p; window.open(`https://wa.me/${p}?text=${encodeURIComponent(msg)}`,'_blank'); }); alert(`Sent to ${expiring.length} member(s)`); }
-    
-    function generateMemberQR() { document.getElementById('memberQrcode').innerHTML=''; new QRCode(document.getElementById('memberQrcode'),{text:`upi://pay?pa=gouravpatil3086@okicici&am=${newMemberAmount}&cu=INR`,width:160,height:160}); }
-    
-    function showMemberReceipt(member, plan, amount, paymentMethod, joinDate, expiryDate) {
-    const receiptHtml = `
-    <div style="background:white; color:black; padding:20px; border-radius:10px; border:3px solid #FF8C42; font-family:sans-serif; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
-        <h2 style="text-align:center; color:#FF8C42; margin:0;">METRO FITNESS</h2>
-        <p style="text-align:center; font-size:12px; margin-bottom:10px;">Official Payment Receipt</p>
-        <hr style="border:1px dashed #ccc;">
-        <p><strong>Member Name:</strong> ${member.name}</p>
-        <p><strong>Plan Details:</strong> ${plan}</p>
-        <p><strong>Amount Paid:</strong> ₹${amount}</p>
-        <p><strong>Joining Date:</strong> ${joinDate}</p>
-        <p><strong>Expiry Date:</strong> <span style="color:red; font-weight:bold;">${expiryDate}</span></p>
-        <p><strong>Payment Mode:</strong> ${paymentMethod}</p>
-        <hr style="border:1px dashed #ccc;">
-        <p style="text-align:center; font-style:italic;">"Thank you for joining Metro Fitness! 💪"</p>
-        <button id="sendReceiptWA" style="background:#25D366; color:white; width:100%; padding:12px; border:none; border-radius:5px; font-weight:bold; cursor:pointer; font-size:16px;">
-            <i class="fab fa-whatsapp"></i> Send to WhatsApp
-        </button>
-        <button id="closeReceiptBtn" style="background:#666; color:white; width:100%; padding:8px; border:none; border-radius:5px; margin-top:10px; cursor:pointer;">Close</button>
-    </div>
-    `;
-    
-    document.getElementById('memberReceiptArea').innerHTML = receiptHtml;
-
-    document.getElementById('sendReceiptWA').onclick = () => {
-        // This part builds the professional WhatsApp message
-        const msg = `━━━━━━━━━━━━━━━━━━━━%0A  🏋️ *METRO FITNESS GYM* 🏋️%0A━━━━━━━━━━━━━━━━━━━━%0A%0A*OFFICIAL PAYMENT RECEIPT*%0A%0A👤 *Member:* ${member.name}%0A📅 *Date:* ${joinDate}%0A⏳ *Valid Until:* ${expiryDate}%0A%0A💳 *Plan:* ${plan}%0A💰 *Total Paid:* ₹${amount}%0A%0A✅ *Status:* Payment Received%0A%0A━━━━━━━━━━━━━━━━━━━━%0A_Stay strong, stay healthy!_ 💪%0A━━━━━━━━━━━━━━━━━━━━`;
-        
-        window.open(`https://wa.me/91${member.phone.replace(/\D/g,'')}?text=${msg}`, '_blank');
+    // Member Registration
+    document.getElementById('registerMemberBtn').onclick = () => {
+        document.getElementById('memberRegModal').style.display = 'flex';
     };
 
-    document.getElementById('closeReceiptBtn').onclick = () => {
+    document.getElementById('closeMemberModal').onclick = () => {
         document.getElementById('memberRegModal').style.display = 'none';
-        location.reload(); 
-    };
-}
-    const today = new Date().toISOString().slice(0, 10);
-    let expiry = new Date();
-    
-    // Logic for Expiry Date
-    if (newMemberPlan.includes("Day")) expiry.setDate(expiry.getDate() + 1);
-    else if (newMemberPlan.includes("Month")) expiry.setMonth(expiry.getMonth() + 1);
-    else if (newMemberPlan.includes("3 Months")) expiry.setMonth(expiry.getMonth() + 3);
-    else if (newMemberPlan.includes("6 Months")) expiry.setMonth(expiry.getMonth() + 6);
-    else expiry.setFullYear(expiry.getFullYear() + 1);
-    
-    const expiryDate = expiry.toISOString().slice(0, 10);
-    const newId = "M" + Math.floor(Math.random() * 900 + 100) + Date.now().toString().slice(-3);
-    
-    const member = {
-        id: newId, 
-        name: document.getElementById('memName').value.trim(),
-        phone: document.getElementById('memPhone').value.trim(),
-        plan: newMemberPlan, 
-        amount: newMemberAmount, 
-        joinDate: today, 
-        expiryDate: expiryDate, 
-        paymentMethod: paymentMethod === 'online' ? `Online (${reference})` : `Cash (${reference})`
     };
 
-    gymMembers.push(member);
-    uploadToSheets(member);
-    saveAll();
-    renderMembers();
-    
-    // This triggers the Receipt Pop-up
-    showMemberReceipt(member, newMemberPlan, newMemberAmount, member.paymentMethod, today, expiryDate);
-}
-    
-    function resetMemberModal() {
-        document.getElementById('memName').value=''; document.getElementById('memAddress').value=''; document.getElementById('memPhone').value=''; document.getElementById('memEmail').value='';
-        newMemberPhoto=null; document.getElementById('memPhotoPreview').innerHTML='<i class="fas fa-camera" style="font-size:2rem; color:#FF8C42;"></i>';
-        newMemberPlan=null; document.getElementById('memberOnlineSection').style.display='none'; document.getElementById('memberCashSection').style.display='none';
-        document.getElementById('memberReceiptArea').innerHTML=''; document.getElementById('memberTransactionId').value=''; document.getElementById('cashReceiptNo').value='';
-        if(document.querySelectorAll('#memberPlanContainer .plan-option')) document.querySelectorAll('#memberPlanContainer .plan-option').forEach(p=>p.classList.remove('selected'));
+    document.getElementById('confirmMemberBtn').onclick = () => {
+        const name = document.getElementById('memName').value;
+        const phone = document.getElementById('memPhone').value;
+        const plan = document.getElementById('memPlan').value;
+
+        if(!name || !phone) return alert("Fill all fields");
+
+        const expiry = new Date();
+        expiry.setMonth(expiry.getMonth() + (plan.includes('1 Month') ? 1 : plan.includes('3') ? 3 : 12));
+
+        const newMember = {
+            id: 'M' + Math.floor(Math.random() * 1000),
+            name,
+            phone,
+            plan,
+            expiryDate: expiry.toISOString().split('T')[0]
+        };
+
+        gymMembers.push(newMember);
+        localStorage.setItem('metro_members', JSON.stringify(gymMembers));
+        renderMembers();
+        document.getElementById('memberRegModal').style.display = 'none';
+    };
+
+    function deleteMember(id) {
+        gymMembers = gymMembers.filter(m => m.id !== id);
+        localStorage.setItem('metro_members', JSON.stringify(gymMembers));
+        renderMembers();
     }
-    
-    function loadMemberPlans() { const container = document.getElementById('memberPlanContainer'); container.innerHTML = ''; Object.keys(PLAN_PRICES).forEach(plan => { const div = document.createElement('div'); div.className='plan-option'; div.innerHTML=`<span>${plan}</span><span>₹${PLAN_PRICES[plan]}</span>`; div.onclick=()=>{ document.querySelectorAll('#memberPlanContainer .plan-option').forEach(p=>p.classList.remove('selected')); div.classList.add('selected'); newMemberPlan=plan; newMemberAmount=PLAN_PRICES[plan]; }; container.appendChild(div); }); }
-    
-    // Renewal Functions
-    function openRenewModal(memberId) { renewMember = gymMembers.find(m => m.id === memberId); document.getElementById('renewMemberDetails').innerHTML = `<p><strong>Member:</strong> ${renewMember.name}</p><p><strong>Phone:</strong> ${renewMember.phone}</p><p><strong>Current Plan:</strong> ${renewMember.plan}</p><p><strong>Current Expiry:</strong> ${renewMember.expiryDate}</p>`; document.getElementById('renewPlanContainer').innerHTML = ''; Object.keys(PLAN_PRICES).forEach(plan => { const div = document.createElement('div'); div.className='plan-option'; div.innerHTML=`<span>${plan}</span><span>₹${PLAN_PRICES[plan]}</span>`; div.onclick=()=>{ document.querySelectorAll('#renewPlanContainer .plan-option').forEach(p=>p.classList.remove('selected')); div.classList.add('selected'); renewSelectedPlan=plan; renewPendingAmount=PLAN_PRICES[plan]; }; document.getElementById('renewPlanContainer').appendChild(div); }); document.getElementById('renewOnlineSection').style.display='none'; document.getElementById('renewReceiptArea').innerHTML=''; document.getElementById('renewModal').style.display='flex'; }
-    function generateRenewQR() { document.getElementById('renewQrcode').innerHTML=''; new QRCode(document.getElementById('renewQrcode'),{text:`upi://pay?pa=gouravpatil3086@okicici&am=${renewPendingAmount}&cu=INR`,width:160,height:160}); }
-    function processRenewal(paymentMethod, txn=null) { if(!renewSelectedPlan) { alert("Select plan"); return; } const today=new Date().toISOString().slice(0,10); let newExpiry=new Date(); if(renewSelectedPlan.includes("Day")) newExpiry.setDate(newExpiry.getDate()+1); else if(renewSelectedPlan.includes("Month")) newExpiry.setMonth(newExpiry.getMonth()+1); else if(renewSelectedPlan.includes("3 Months")) newExpiry.setMonth(newExpiry.getMonth()+3); else if(renewSelectedPlan.includes("6 Months")) newExpiry.setMonth(newExpiry.getMonth()+6); else newExpiry.setFullYear(newExpiry.getFullYear()+1); const oldExpiry=renewMember.expiryDate; renewMember.expiryDate=newExpiry.toISOString().slice(0,10); renewMember.plan=renewSelectedPlan; renewMember.amount=renewPendingAmount; renewMember.paymentMethod=paymentMethod==='online'?`Online(${txn})`:'Cash'; saveAll(); renderMembers(); document.getElementById('renewReceiptArea').innerHTML=`<div class="receipt"><h3>RENEWAL RECEIPT</h3><p><strong>${renewMember.name}</strong><br>Plan: ${renewSelectedPlan}<br>Amount: ₹${renewPendingAmount}<br>New Expiry: ${renewMember.expiryDate}</p><button id="sendRenewWA" class="whatsapp-btn">Send via WhatsApp</button><button id="closeRenewBtn" class="continue-btn">Close</button></div>`; document.getElementById('renewOnlineSection').style.display='none'; document.getElementById('sendRenewWA')?.addEventListener('click',()=>{ let p=renewMember.phone.replace(/\D/g,''); if(!p.startsWith('91')) p='91'+p; window.open(`https://wa.me/${p}?text=${encodeURIComponent(`RENEWAL RECEIPT\n${renewMember.name}\nPlan: ${renewSelectedPlan}\nAmount: ₹${renewPendingAmount}\nNew Expiry: ${renewMember.expiryDate}`)}`,'_blank'); }); document.getElementById('closeRenewBtn')?.addEventListener('click',()=>document.getElementById('renewModal').style.display='none'); }
-    
-    // Equipment Management
-    function addEquipment() { editingEquipmentIndex = null; document.getElementById('equipModalTitle').innerText = 'Add Equipment'; document.getElementById('equipName').value = ''; document.getElementById('equipStatus').value = ''; document.getElementById('equipLastService').value = ''; document.getElementById('equipNextDue').value = ''; document.getElementById('equipmentModal').style.display = 'flex'; }
-    function editEquipment(idx) { editingEquipmentIndex = idx; const eq = equipment[idx]; document.getElementById('equipModalTitle').innerText = 'Edit Equipment'; document.getElementById('equipName').value = eq.name; document.getElementById('equipStatus').value = eq.status; document.getElementById('equipLastService').value = eq.lastService || ''; document.getElementById('equipNextDue').value = eq.nextDue || ''; document.getElementById('equipmentModal').style.display = 'flex'; }
-    function deleteEquipment(idx) { if(confirm("Delete?")) { equipment.splice(idx,1); saveAll(); renderEquipment(); } }
-    function saveEquipment() { const name = document.getElementById('equipName').value.trim(); if(!name) { alert("Name required"); return; } const newEquip = { name, status: document.getElementById('equipStatus').value || 'Good', lastService: document.getElementById('equipLastService').value || '', nextDue: document.getElementById('equipNextDue').value || '' }; if(editingEquipmentIndex !== null) equipment[editingEquipmentIndex] = newEquip; else equipment.push(newEquip); saveAll(); renderEquipment(); document.getElementById('equipmentModal').style.display = 'none'; }
-    
-    let staffCapturedPhoto=null;
-    function saveStaffFromModal() { const name=document.getElementById('staffName').value.trim(); const phone=document.getElementById('staffPhone').value.trim(); const email=document.getElementById('staffEmail').value.trim(); if(!name||!phone||!email){ alert("Fill required fields"); return; } const newId="S"+Math.floor(Math.random()*900+100)+Date.now().toString().slice(-3); staffList.push({ id:newId, name, address:document.getElementById('staffAddress').value, phone, email, photo:staffCapturedPhoto||"" }); saveAll(); renderStaff(); document.getElementById('staffRegModal').style.display='none'; alert("Staff registered!"); }
-    
-    // Photo handlers
-    document.getElementById('memPhotoInput')?.addEventListener('change',(e)=>{ if(e.target.files[0]){ const r=new FileReader(); r.onload=(ev)=>{ newMemberPhoto=ev.target.result; document.getElementById('memPhotoPreview').innerHTML=`<img src="${newMemberPhoto}" style="width:100%;height:100%;object-fit:cover;">`; }; r.readAsDataURL(e.target.files[0]); } });
-    document.getElementById('staffPhotoInput')?.addEventListener('change',(e)=>{ if(e.target.files[0]){ const r=new FileReader(); r.onload=(ev)=>{ staffCapturedPhoto=ev.target.result; document.getElementById('staffPhotoPreview').innerHTML=`<img src="${staffCapturedPhoto}" style="width:100%;height:100%;object-fit:cover;">`; }; r.readAsDataURL(e.target.files[0]); } });
-    
-    // Event Listeners
-    document.getElementById('adminLoginBtn')?.addEventListener('click',()=>{ if(document.getElementById('adminUser').value==='admin' && document.getElementById('adminPass').value==='admin123') { currentUser='admin'; document.getElementById('loginSection').style.display='none'; document.getElementById('dashboardPanel').style.display='block'; document.getElementById('staffCard').style.display='block'; document.getElementById('userStatusDisplay').innerHTML='<i class="fas fa-crown"></i> Admin'; document.getElementById('showLoginBtn').style.display='none'; document.getElementById('logoutBtn').style.display='inline-flex'; renderMembers(); renderStaff(); renderEquipment(); } else alert('Invalid'); });
-    document.getElementById('staffLoginBtn')?.addEventListener('click',()=>{ if(document.getElementById('staffUser').value==='staff' && document.getElementById('staffPass').value==='staff123') { currentUser='staff'; document.getElementById('loginSection').style.display='none'; document.getElementById('dashboardPanel').style.display='block'; document.getElementById('staffCard').style.display='none'; document.getElementById('userStatusDisplay').innerHTML='<i class="fas fa-id-badge"></i> Staff'; document.getElementById('showLoginBtn').style.display='none'; document.getElementById('logoutBtn').style.display='inline-flex'; renderMembers(); renderEquipment(); } else alert('Invalid'); });
-    document.getElementById('showLoginBtn').addEventListener('click',()=>{ if(!currentUser){ document.getElementById('loginSection').style.display='block'; document.getElementById('dashboardPanel').style.display='none'; } });
-    document.getElementById('logoutBtn').addEventListener('click',()=>{ currentUser=null; document.getElementById('loginSection').style.display='block'; document.getElementById('dashboardPanel').style.display='none'; document.getElementById('userStatusDisplay').innerHTML='<i class="fas fa-user-lock"></i> Not logged in'; document.getElementById('showLoginBtn').style.display='inline-flex'; document.getElementById('logoutBtn').style.display='none'; });
-    document.getElementById('registerMemberBtn')?.addEventListener('click',()=>{ if(currentUser){ loadMemberPlans(); document.getElementById('memberRegModal').style.display='flex'; } else alert('Login first'); });
-    document.getElementById('registerStaffBtn')?.addEventListener('click',()=>{ if(currentUser==='admin'){ document.getElementById('staffRegModal').style.display='flex'; } else alert('Admin only'); });
-    document.getElementById('broadcastReminderBtn')?.addEventListener('click',sendBroadcastReminders);
-    document.getElementById('memberSearch')?.addEventListener('input',(e)=>{ memberSearchTerm=e.target.value.toLowerCase(); renderMembers(); });
-    document.getElementById('staffSearch')?.addEventListener('input',(e)=>{ staffSearchTerm=e.target.value.toLowerCase(); renderStaff(); });
-    document.getElementById('addEquipmentBtn')?.addEventListener('click',addEquipment);
-    document.getElementById('saveEquipmentBtn')?.addEventListener('click',saveEquipment);
-    document.getElementById('closeEquipModal')?.addEventListener('click',()=>{ document.getElementById('equipmentModal').style.display='none'; });
-    document.getElementById('closeMemberModal')?.addEventListener('click',()=>{ document.getElementById('memberRegModal').style.display='none'; resetMemberModal(); });
-    document.getElementById('closeStaffRegModal')?.addEventListener('click',()=>{ document.getElementById('staffRegModal').style.display='none'; });
-    document.getElementById('closeRenewModal')?.addEventListener('click',()=>{ document.getElementById('renewModal').style.display='none'; });
-    document.getElementById('memberOnlineBtn')?.addEventListener('click',()=>{ if(!newMemberPlan){ alert("Select plan first"); return; } generateMemberQR(); document.getElementById('memberOnlineSection').style.display='block'; document.getElementById('memberCashSection').style.display='none'; });
-    document.getElementById('memberCashBtn')?.addEventListener('click',()=>{ if(!newMemberPlan){ alert("Select plan first"); return; } document.getElementById('memberCashSection').style.display='block'; document.getElementById('memberOnlineSection').style.display='none'; });
-    document.getElementById('confirmMemberOnlineBtn')?.addEventListener('click',()=>{ let txn=document.getElementById('memberTransactionId').value.trim(); if(!txn){ alert("Enter Transaction ID"); return; } saveMember('online',txn); });
-    document.getElementById('confirmMemberCashBtn')?.addEventListener('click',()=>{ let ref=document.getElementById('cashReceiptNo').value.trim(); if(!ref){ alert("Enter Receipt Number"); return; } saveMember('cash',ref); });
-    document.getElementById('renewOnlineBtn')?.addEventListener('click',()=>{ if(!renewSelectedPlan){ alert("Select plan"); return; } generateRenewQR(); document.getElementById('renewOnlineSection').style.display='block'; });
-    document.getElementById('confirmRenewOnlineBtn')?.addEventListener('click',()=>{ let txn=document.getElementById('renewTransactionId').value.trim(); if(!txn){ alert("Enter Transaction ID"); return; } processRenewal('online',txn); });
-    document.getElementById('renewCashBtn')?.addEventListener('click',()=>{ if(!renewSelectedPlan){ alert("Select plan"); return; } processRenewal('cash'); });
-    document.getElementById('saveStaffRegBtn')?.addEventListener('click',saveStaffFromModal);
-    
-    renderMembers(); renderStaff(); renderEquipment();
-function generateReceipt(member) {
-    const joiningDate = new Date().toLocaleDateString();
-    let expiry = new Date();
-    // Logic to add months based on plan
-    if(member.plan.includes("1 Month")) expiry.setMonth(expiry.getMonth() + 1);
-    else if(member.plan.includes("3 Months")) expiry.setMonth(expiry.getMonth() + 3);
-    else if(member.plan.includes("1 Year")) expiry.setFullYear(expiry.getFullYear() + 1);
-    
-    const expiryDate = expiry.toLocaleDateString();
 
-    const receiptHtml = `
-        <div style="background: #fff; color: #000; padding: 20px; border-radius: 10px; margin-top: 20px; border: 2px solid #FFD166;">
-            <h3 style="text-align:center;">METRO FITNESS RECEIPT</h3>
-            <p><strong>Member:</strong> ${member.name}</p>
-            <p><strong>Joining:</strong> ${joiningDate}</p>
-            <p><strong>Expiry:</strong> ${expiryDate}</p>
-            <p><strong>Paid:</strong> ${member.amount}</p>
-            <p style="text-align:center; font-style:italic;">Thank you for joining Metro Fitness!</p>
-            <button onclick="window.open('https://wa.me/${member.phone}?text=Hello ${member.name}, your payment is confirmed. Expiry: ${expiryDate}. Thank you!')" 
-                style="background:#25D366; width:100%; color:white; padding:10px; border:none; border-radius:5px; cursor:pointer;">
-                <i class="fab fa-whatsapp"></i> Send to WhatsApp
-            </button>
-        </div>
-    `;
-    document.getElementById('memberReceiptArea').innerHTML = receiptHtml;
-}
-function uploadToSheets(data) {
-  const scriptURL = 'https://script.google.com/macros/s/AKfycbwbeIEedfDryYl-1OKuUOmESOVkQKjdFnS1d__UryJVtPvfXDqbncfwI1bn7xLL-F-d/exec'; 
-  fetch(scriptURL, {
-    method: 'POST',
-    mode: 'no-cors', 
-    body: JSON.stringify(data)
-  })
-  .then(() => console.log("Cloud Backup Successful"))
-  .catch(error => console.error('Backup Error:', error));
-}
+    document.getElementById('logoutBtn').onclick = () => { location.reload(); };
 </script>
-<div id="profileModal" class="modal" style="display:none; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.85); justify-content:center; align-items:center;">
-    <div class="modal-content" style="background:#1a1a2e; color:white; padding:15px; border-radius:12px; width:90%; max-width:320px; text-align:center; position:relative; border:1px solid #444; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-        
-        <span onclick="closeProfile()" style="position:absolute; right:12px; top:8px; font-size:22px; cursor:pointer; color:#888;">&times;</span>
-        
-        <h2 id="viewName" style="color:#00d2ff; margin: 5px 0 2px 0; font-size: 1.4rem;"></h2>
-        <p id="viewID" style="color:#888; margin: 0 0 10px 0; font-size: 0.85rem;"></p>
-        
-        <hr style="border:0; border-top:1px solid #333; margin: 10px 0;">
-        
-        <div style="text-align:left; line-height:1.4; font-size: 14px; padding: 0 10px;">
-            <p id="viewPhone" style="margin: 5px 0;"></p>
-            <p id="viewPlan" style="margin: 5px 0;"></p>
-            <p id="viewExpiry" style="margin: 5px 0;"></p>
-        </div>
-    </div>
-</div>
+
 </body>
 </html>
