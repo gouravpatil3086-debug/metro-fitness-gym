@@ -144,8 +144,17 @@ button:active {
         .member-photo, .staff-photo { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: #2a3448; display: flex; align-items: center; justify-content: center; }
         .action-bar { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; align-items: center; }
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); justify-content: center; align-items: center; z-index: 1000; overflow-y: auto; padding: 1rem; }
-        .modal-content { background: #111827; max-width: 600px; width: 100%; border-radius: 2rem; padding: 2rem; position: relative; border: 1px solid #FF8C42; max-height: 90vh; overflow-y: auto; }
-        .modal-content h2, .modal-content h3, .modal-content h4, .modal-content p, .modal-content label { color: white; }
+        .modal-content {
+    background: rgba(18, 25, 45, 0.98);
+    max-width: 500px;
+    width: 95%;
+    border-radius: 1.5rem;
+    padding: 2rem;
+    position: relative;
+    border: 1px solid rgba(255, 140, 66, 0.3);
+    max-height: 85vh; /* This keeps it from going off-screen */
+    overflow-y: auto; /* Adds a scrollbar inside if needed */
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         .close-modal { position: absolute; right: 1.5rem; top: 1rem; font-size: 1.8rem; cursor: pointer; color: #FF8C42; }
         .member-details-card { background: #0a0f1c; padding: 1rem; border-radius: 1rem; margin: 1rem 0; border-left: 3px solid #FF8C42; }
         .plan-option { display: flex; justify-content: space-between; padding: 12px; margin: 8px 0; background: #0a0f1c; border-radius: 1rem; cursor: pointer; border: 1px solid #2a3448; transition: 0.2s; color: white; }
@@ -169,6 +178,7 @@ button:active {
         .thankyou-note { text-align: center; margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed #FF8C42; color: #FFD166; font-style: italic; }
         .photo-preview { width: 80px; height: 80px; border-radius: 50%; background: #1e2a3e; border: 2px solid #FF8C42; display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; margin: 10px auto; }
         .photo-preview img { width: 100%; height: 100%; object-fit: cover; }
+.photo-preview i { font-size: 1.5rem; color: #94a3b8; }
         @media (max-width: 760px) { .dashboard { padding: 1rem; } .search-box { width: 100%; margin: 10px 0; } }
     </style>
 </head>
